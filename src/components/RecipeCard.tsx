@@ -65,22 +65,24 @@ export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
           <span>Cook: {recipe.cookTime}m</span>
           <span>{recipe.nutrition.calories} cal/serving</span>
         </div>
-        {matchPercent === 100 && (
-          <div className="mt-2 text-xs font-medium text-olive">
-            Ready to cook!
-          </div>
-        )}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            addRecipeToGroceryList(recipe);
-            setCarted(true);
-            setTimeout(() => setCarted(false), 2000);
-          }}
-          className="mt-3 px-3 py-1 text-xs font-medium rounded-md bg-amber/15 text-amber-dark hover:bg-amber/25 transition-colors"
-        >
-          {carted ? "Added to list!" : "Add ingredients to cart"}
-        </button>
+        <div className="flex items-center justify-between mt-3">
+          {matchPercent === 100 ? (
+            <span className="inline-block px-3 py-1 rounded-full bg-olive/15 text-olive-dark text-sm font-semibold">
+              Ready to cook!
+            </span>
+          ) : <span />}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              addRecipeToGroceryList(recipe);
+              setCarted(true);
+              setTimeout(() => setCarted(false), 2000);
+            }}
+            className="px-3 py-1 text-xs font-medium rounded-md bg-amber/15 text-amber-dark hover:bg-amber/25 transition-colors"
+          >
+            {carted ? "Added to list!" : "Add ingredients to cart"}
+          </button>
+        </div>
       </div>
 
       {expanded && (
