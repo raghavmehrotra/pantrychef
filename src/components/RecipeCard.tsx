@@ -13,9 +13,10 @@ interface RecipeCardProps {
 
 export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
   const [expanded, setExpanded] = useState(false);
-  const { logMeal } = useApp();
+  const { logMeal, addRecipeToGroceryList } = useApp();
   const [servings, setServings] = useState(1);
   const [logged, setLogged] = useState(false);
+  const [carted, setCarted] = useState(false);
 
   const totalIngredients = recipe.ingredients.length;
   const matchPercent = matchedCount !== undefined
@@ -69,6 +70,17 @@ export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
             Ready to cook!
           </div>
         )}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            addRecipeToGroceryList(recipe);
+            setCarted(true);
+            setTimeout(() => setCarted(false), 2000);
+          }}
+          className="mt-3 px-3 py-1 text-xs font-medium rounded-md bg-amber/15 text-amber-dark hover:bg-amber/25 transition-colors"
+        >
+          {carted ? "Added to list!" : "Add ingredients to cart"}
+        </button>
       </div>
 
       {expanded && (

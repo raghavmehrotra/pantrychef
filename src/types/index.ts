@@ -44,6 +44,8 @@ export interface PantryItem {
 
 export interface GroceryItem {
   name: string;
+  qty: number;
+  unit: string;
   category: PantryCategory;
   checked: boolean;
 }

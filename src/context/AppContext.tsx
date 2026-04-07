@@ -4,6 +4,8 @@ import { createContext, useContext, useState, ReactNode } from "react";
 import { GroceryItem, MealLog, NutritionInfo, PantryCategory, PantryItem } from "@/types";
 import { recipes } from "@/data/recipes";
 import { classifyIngredient } from "@/data/categories";
+import { convertUnits, parseAmount } from "@/data/units";
+import { Recipe } from "@/types";
 
 interface AppContextType {
   pantry: PantryItem[];
@@ -14,7 +16,8 @@ interface AppContextType {
   removeFromPantry: (name: string) => void;
   clearPantry: () => void;
   groceryList: GroceryItem[];
-  addToGroceryList: (name: string, category?: PantryCategory) => void;
+  addToGroceryList: (name: string, qty?: number, unit?: string, category?: PantryCategory) => void;
+  addRecipeToGroceryList: (recipe: Recipe) => number;
   toggleGroceryItem: (name: string) => void;
   removeGroceryItem: (name: string) => void;
   clearGroceryList: () => void;
@@ -67,10 +70,44 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setPantry([]);
   }
 
-  function addToGroceryList(name: string, category?: PantryCategory) {
+  function addToGroceryList(name: string, qty: number = 1, unit: string = "unit", category?: PantryCategory) {
     const normalized = name.toLowerCase().trim();
-    if (!normalized || groceryList.some((i) => i.name === normalized)) return;
-    setGroceryList((prev) => [...prev, { name: normalized, category: category ?? classifyIngredient(normalized), checked: false }]);
+    if (!normalized) return;
+    const existing = groceryList.find((i) => i.name === normalized);
+    if (existing) {
+      setGroceryList((prev) =>
+        prev.map((i) =>
+          i.name === normalized ? { ...i, qty: i.qty + qty, checked: false } : i
+        )
+      );
+    } else {
+      setGroceryList((prev) => [...prev, { name: normalized, qty, unit, category: category ?? classifyIngredient(normalized), checked: false }]);
+    }
+  }
+
+  function addRecipeToGroceryList(recipe: Recipe): number {
+    let added = 0;
+    for (const ing of recipe.ingredients) {
+      const name = ing.name.toLowerCase().trim();
+      const parsed = parseAmount(ing.amount);
+      const neededQty = parsed?.qty ?? 1;
+      const neededUnit = parsed?.unit ?? "unit";
+
+      // Check if pantry already has this ingredient
+      const pantryItem = pantry.find((p) => p.name === name);
+      if (pantryItem) {
+        // Try to convert pantry qty to the recipe's unit
+        const converted = convertUnits(pantryItem.qty, pantryItem.unit, neededUnit);
+        const pantryQtyInRecipeUnit = converted !== null ? converted : (pantryItem.unit === neededUnit ? pantryItem.qty : 0);
+        const deficit = neededQty - pantryQtyInRecipeUnit;
+        if (deficit <= 0) continue; // pantry has enough
+        addToGroceryList(name, Math.round(deficit * 100) / 100, neededUnit);
+      } else {
+        addToGroceryList(name, neededQty, neededUnit);
+      }
+      added++;
+    }
+    return added;
   }
 
   function toggleGroceryItem(name: string) {
@@ -127,6 +164,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         clearPantry,
         groceryList,
         addToGroceryList,
+        addRecipeToGroceryList,
         toggleGroceryItem,
         removeGroceryItem,
         clearGroceryList,
