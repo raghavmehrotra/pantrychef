@@ -24,6 +24,12 @@ export interface Recipe {
   tags: string[];
 }
 
+export interface PantryItem {
+  name: string;
+  qty: number;
+  unit: string;
+}
+
 export interface MealLog {
   id: string;
   recipeId: string;

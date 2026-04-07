@@ -12,9 +12,9 @@ export default function IngredientPage({
 }) {
   const { name } = use(params);
   const ingredientName = decodeURIComponent(name);
-  const { pantry, addToPantry, removeFromPantry } = useApp();
+  const { pantryNames, addToPantry, removeFromPantry } = useApp();
 
-  const isInPantry = pantry.includes(ingredientName);
+  const isInPantry = pantryNames.includes(ingredientName);
 
   const matchingRecipes = recipes.filter((recipe) =>
     recipe.ingredients.some((ing) => ing.name === ingredientName)
@@ -23,11 +23,11 @@ export default function IngredientPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="font-serif text-2xl font-bold text-ink">
           Recipes with{" "}
-          <span className="text-emerald-700">{ingredientName}</span>
+          <span className="text-olive">{ingredientName}</span>
         </h1>
-        <p className="text-gray-500 mt-1">
+        <p className="text-ink-muted mt-1">
           {matchingRecipes.length} recipe{matchingRecipes.length !== 1 && "s"}{" "}
           use this ingredient.
         </p>
@@ -37,12 +37,12 @@ export default function IngredientPage({
         onClick={() =>
           isInPantry
             ? removeFromPantry(ingredientName)
-            : addToPantry(ingredientName)
+            : addToPantry(ingredientName, 1, "unit")
         }
         className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
           isInPantry
             ? "bg-red-100 text-red-700 hover:bg-red-200"
-            : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+            : "bg-olive/10 text-olive-dark hover:bg-olive/20"
         }`}
       >
         {isInPantry
@@ -51,14 +51,14 @@ export default function IngredientPage({
       </button>
 
       {matchingRecipes.length === 0 ? (
-        <p className="text-gray-400 text-sm py-8 text-center">
+        <p className="text-ink-muted text-sm py-8 text-center">
           No recipes found with this ingredient.
         </p>
       ) : (
         <div className="space-y-4">
           {matchingRecipes.map((recipe) => {
             const matchedCount = recipe.ingredients.filter((ing) =>
-              pantry.includes(ing.name)
+              pantryNames.includes(ing.name)
             ).length;
             return (
               <RecipeCard

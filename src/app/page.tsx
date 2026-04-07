@@ -7,7 +7,7 @@ import RecipeCard from "@/components/RecipeCard";
 import NutritionLabel from "@/components/NutritionLabel";
 
 export default function HomePage() {
-  const { pantry, mealLogs } = useApp();
+  const { pantry, pantryNames, mealLogs } = useApp();
 
   const today = new Date().toISOString().split("T")[0];
   const todayLogs = mealLogs.filter((log) => log.date === today);
@@ -26,7 +26,7 @@ export default function HomePage() {
   const topRecipes = recipes
     .map((recipe) => {
       const matchedCount = recipe.ingredients.filter((ing) =>
-        pantry.includes(ing.name)
+        pantryNames.includes(ing.name)
       ).length;
       return { recipe, matchedCount };
     })
@@ -55,10 +55,10 @@ export default function HomePage() {
         >
           <h2 className="font-serif text-lg font-semibold text-ink">Pantry</h2>
           <p className="text-3xl font-bold text-olive mt-2">
-            {pantry.length}
+            {pantryNames.length}
           </p>
           <p className="text-sm text-ink-muted mt-1">
-            {pantry.length === 0
+            {pantryNames.length === 0
               ? "Add ingredients to get started"
               : "ingredients on hand"}
           </p>
@@ -103,7 +103,7 @@ export default function HomePage() {
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-serif text-lg font-semibold text-ink">
-            {pantry.length > 0 ? "Top Recipe Matches" : "Featured Recipes"}
+            {pantryNames.length > 0 ? "Top Recipe Matches" : "Featured Recipes"}
           </h2>
           <Link
             href="/recipes"

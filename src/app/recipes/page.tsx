@@ -8,13 +8,13 @@ import RecipeCard from "@/components/RecipeCard";
 type Filter = "all" | "ready" | "almost";
 
 export default function RecipesPage() {
-  const { pantry } = useApp();
+  const { pantryNames } = useApp();
   const [filter, setFilter] = useState<Filter>("all");
 
   const recipesWithMatch = recipes
     .map((recipe) => {
       const matchedCount = recipe.ingredients.filter((ing) =>
-        pantry.includes(ing.name)
+        pantryNames.includes(ing.name)
       ).length;
       return { recipe, matchedCount };
     })
@@ -40,9 +40,9 @@ export default function RecipesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Recipes</h1>
-        <p className="text-gray-500 mt-1">
-          {pantry.length > 0
+        <h1 className="font-serif text-2xl font-bold text-ink">Recipes</h1>
+        <p className="text-ink-muted mt-1">
+          {pantryNames.length > 0
             ? "Sorted by how many ingredients you already have."
             : "Add ingredients to your pantry to see matching recipes."}
         </p>
@@ -55,8 +55,8 @@ export default function RecipesPage() {
             onClick={() => setFilter(f.key)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
               filter === f.key
-                ? "bg-emerald-600 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-olive text-cream"
+                : "bg-cream-dark text-ink-light hover:bg-amber-light/20"
             }`}
           >
             {f.label}
@@ -65,7 +65,7 @@ export default function RecipesPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-gray-400 text-sm py-8 text-center">
+        <p className="text-ink-muted text-sm py-8 text-center">
           No recipes match this filter. Try adding more ingredients to your pantry.
         </p>
       ) : (

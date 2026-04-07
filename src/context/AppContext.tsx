@@ -1,13 +1,15 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
-import { MealLog, NutritionInfo } from "@/types";
+import { MealLog, NutritionInfo, PantryItem } from "@/types";
 import { recipes } from "@/data/recipes";
 
 interface AppContextType {
-  pantry: string[];
-  addToPantry: (item: string) => void;
-  removeFromPantry: (item: string) => void;
+  pantry: PantryItem[];
+  pantryNames: string[];
+  addToPantry: (name: string, qty: number, unit: string) => void;
+  updatePantryItem: (name: string, qty: number, unit: string) => void;
+  removeFromPantry: (name: string) => void;
   clearPantry: () => void;
   mealLogs: MealLog[];
   logMeal: (recipeId: string, servings: number) => void;
@@ -17,18 +19,34 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [pantry, setPantry] = useState<string[]>([]);
+  const [pantry, setPantry] = useState<PantryItem[]>([]);
   const [mealLogs, setMealLogs] = useState<MealLog[]>([]);
 
-  function addToPantry(item: string) {
-    const normalized = item.toLowerCase().trim();
-    if (normalized && !pantry.includes(normalized)) {
-      setPantry((prev) => [...prev, normalized]);
+  const pantryNames = pantry.map((item) => item.name);
+
+  function addToPantry(name: string, qty: number = 1, unit: string = "unit") {
+    const normalized = name.toLowerCase().trim();
+    if (!normalized) return;
+    const existing = pantry.find((i) => i.name === normalized);
+    if (existing) {
+      setPantry((prev) =>
+        prev.map((i) =>
+          i.name === normalized ? { ...i, qty: i.qty + qty } : i
+        )
+      );
+    } else {
+      setPantry((prev) => [...prev, { name: normalized, qty, unit }]);
     }
   }
 
-  function removeFromPantry(item: string) {
-    setPantry((prev) => prev.filter((i) => i !== item));
+  function updatePantryItem(name: string, qty: number, unit: string) {
+    setPantry((prev) =>
+      prev.map((i) => (i.name === name ? { ...i, qty, unit } : i))
+    );
+  }
+
+  function removeFromPantry(name: string) {
+    setPantry((prev) => prev.filter((i) => i.name !== name));
   }
 
   function clearPantry() {
@@ -67,7 +85,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider
       value={{
         pantry,
+        pantryNames,
         addToPantry,
+        updatePantryItem,
         removeFromPantry,
         clearPantry,
         mealLogs,

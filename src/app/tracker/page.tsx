@@ -36,16 +36,16 @@ export default function TrackerPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Nutrition Tracker</h1>
-        <p className="text-gray-500 mt-1">Log meals and track your daily macros.</p>
+        <h1 className="font-serif text-2xl font-bold text-ink">Nutrition Tracker</h1>
+        <p className="text-ink-muted mt-1">Log meals and track your daily macros.</p>
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">
+        <h2 className="font-serif text-lg font-semibold text-ink mb-3">
           Today&apos;s Summary
         </h2>
         {todayLogs.length === 0 ? (
-          <p className="text-gray-400 text-sm">
+          <p className="text-ink-muted text-sm">
             No meals logged today. Use the form below to get started.
           </p>
         ) : (
@@ -54,14 +54,14 @@ export default function TrackerPage() {
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">Log a Meal</h2>
+        <h2 className="font-serif text-lg font-semibold text-ink mb-3">Log a Meal</h2>
         <form onSubmit={handleLog} className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm text-gray-600 mb-1">Recipe</label>
+            <label className="block text-sm text-ink-light mb-1">Recipe</label>
             <select
               value={selectedRecipe}
               onChange={(e) => setSelectedRecipe(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full border border-amber-light/40 bg-cream rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-olive"
             >
               {recipes.map((r) => (
                 <option key={r.id} value={r.id}>
@@ -71,19 +71,19 @@ export default function TrackerPage() {
             </select>
           </div>
           <div className="w-24">
-            <label className="block text-sm text-gray-600 mb-1">Servings</label>
+            <label className="block text-sm text-ink-light mb-1">Servings</label>
             <input
               type="number"
               min={0.5}
               step={0.5}
               value={servings}
               onChange={(e) => setServings(Number(e.target.value))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full border border-amber-light/40 bg-cream rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-olive"
             />
           </div>
           <button
             type="submit"
-            className="px-5 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+            className="px-5 py-2 bg-olive text-cream text-sm font-medium rounded-lg hover:bg-olive-dark transition-colors"
           >
             {justLogged ? "Logged!" : "Log Meal"}
           </button>
@@ -92,30 +92,30 @@ export default function TrackerPage() {
 
       {todayLogs.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">
+          <h2 className="font-serif text-lg font-semibold text-ink mb-3">
             Today&apos;s Meals
           </h2>
           <div className="space-y-2">
             {todayLogs.map((log) => (
               <div
                 key={log.id}
-                className="flex items-center justify-between border rounded-lg p-3 bg-white"
+                className="flex items-center justify-between border border-amber-light/40 rounded-lg p-3 bg-cream-dark"
               >
                 <div>
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-ink">
                     {log.recipeName}
                   </span>
-                  <span className="text-gray-400 text-sm ml-2">
+                  <span className="text-ink-muted text-sm ml-2">
                     x{log.servings} serving{log.servings !== 1 && "s"}
                   </span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-ink-muted">
                     {log.nutrition.calories} cal | {log.nutrition.protein}g protein
                   </span>
                   <button
                     onClick={() => removeMealLog(log.id)}
-                    className="text-red-400 hover:text-red-600 text-sm"
+                    className="text-red-500 hover:text-red-700 text-sm"
                   >
                     Remove
                   </button>
