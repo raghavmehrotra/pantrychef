@@ -18,6 +18,13 @@ const cards = [
     arrow: "text-amber-dark",
   },
   {
+    href: "/grocerylist",
+    title: "Grocery List",
+    description: "Keep track of what you need to buy",
+    accent: "border-t-violet-400",
+    arrow: "text-violet-500",
+  },
+  {
     href: "/tracker",
     title: "Manage Macros",
     description: "Track your daily nutrition and goals",
@@ -42,7 +49,7 @@ export default function HomePage() {
         What are we making today?
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl mt-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl mt-12">
         {cards.map((card, i) => (
           <Link
             key={card.href}

@@ -42,6 +42,12 @@ export interface PantryItem {
   category: PantryCategory;
 }
 
+export interface GroceryItem {
+  name: string;
+  category: PantryCategory;
+  checked: boolean;
+}
+
 export interface MealLog {
   id: string;
   recipeId: string;

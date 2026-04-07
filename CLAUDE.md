@@ -5,12 +5,13 @@ and track macros from the meals they have consumed. It is meant to ensure that t
 stays on track to achieve their nutritional goals, and push them to avoid wasting 
 ingredients from their pantry.
 
-There are 5 distinct pages/routes in the app:
-- / --> home dashboard with a pantry snapshot, top recipe matches, and today's nutrition summary.
-- /pantry --> this is meant to display the current state of the user's pantry. This is editable in that the user can add and remove ingredients from the pantry too.
+There are 6 distinct pages/routes in the app:
+- / --> welcome page with navigation cards to the main sections.
+- /pantry --> this is meant to display the current state of the user's pantry. This is editable in that the user can add and remove ingredients from the pantry too. Items are categorized into 6 groups (meat, vegetables, grains, spices & oils, fruits, snacks) and support drag-and-drop recategorization.
 - /recipes --> a list of recipes that the user can try. They are ranked in the order of how many ingredients the user already
 has to make the recipe
 - /recipes/:item --> this shows a list of recipes that contain :item. The route is dynamic.
+- /grocerylist --> a simple todo-list style page for tracking items to buy, categorized the same way as the pantry.
 - /tracker --> allows the user to log their meals and track their macros.
 
 The style is meant to be minimal, yet inviting. Make sure the layout isn't boring. The focus should

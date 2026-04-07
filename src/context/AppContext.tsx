@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
-import { MealLog, NutritionInfo, PantryCategory, PantryItem } from "@/types";
+import { GroceryItem, MealLog, NutritionInfo, PantryCategory, PantryItem } from "@/types";
 import { recipes } from "@/data/recipes";
 import { classifyIngredient } from "@/data/categories";
 
@@ -13,6 +13,11 @@ interface AppContextType {
   updatePantryCategory: (name: string, category: PantryCategory) => void;
   removeFromPantry: (name: string) => void;
   clearPantry: () => void;
+  groceryList: GroceryItem[];
+  addToGroceryList: (name: string, category?: PantryCategory) => void;
+  toggleGroceryItem: (name: string) => void;
+  removeGroceryItem: (name: string) => void;
+  clearGroceryList: () => void;
   mealLogs: MealLog[];
   logMeal: (recipeId: string, servings: number) => void;
   removeMealLog: (id: string) => void;
@@ -22,6 +27,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [pantry, setPantry] = useState<PantryItem[]>([]);
+  const [groceryList, setGroceryList] = useState<GroceryItem[]>([]);
   const [mealLogs, setMealLogs] = useState<MealLog[]>([]);
 
   const pantryNames = pantry.map((item) => item.name);
@@ -59,6 +65,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   function clearPantry() {
     setPantry([]);
+  }
+
+  function addToGroceryList(name: string, category?: PantryCategory) {
+    const normalized = name.toLowerCase().trim();
+    if (!normalized || groceryList.some((i) => i.name === normalized)) return;
+    setGroceryList((prev) => [...prev, { name: normalized, category: category ?? classifyIngredient(normalized), checked: false }]);
+  }
+
+  function toggleGroceryItem(name: string) {
+    setGroceryList((prev) =>
+      prev.map((i) => (i.name === name ? { ...i, checked: !i.checked } : i))
+    );
+  }
+
+  function removeGroceryItem(name: string) {
+    setGroceryList((prev) => prev.filter((i) => i.name !== name));
+  }
+
+  function clearGroceryList() {
+    setGroceryList([]);
   }
 
   function logMeal(recipeId: string, servings: number) {
@@ -99,6 +125,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         updatePantryCategory,
         removeFromPantry,
         clearPantry,
+        groceryList,
+        addToGroceryList,
+        toggleGroceryItem,
+        removeGroceryItem,
+        clearGroceryList,
         mealLogs,
         logMeal,
         removeMealLog,
