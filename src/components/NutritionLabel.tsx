@@ -17,11 +17,11 @@ export default function NutritionLabel({ nutrition, servings = 1 }: NutritionLab
   return (
     <div className="grid grid-cols-5 gap-2 text-center">
       {items.map((item) => (
-        <div key={item.label} className="bg-gray-50 rounded-lg p-2">
-          <div className="text-lg font-bold text-emerald-700">
+        <div key={item.label} className="bg-cream-dark rounded-lg p-2">
+          <div className="text-lg font-bold text-olive">
             {Math.round(item.value)}{item.unit}
           </div>
-          <div className="text-xs text-gray-500">{item.label}</div>
+          <div className="text-xs text-ink-muted">{item.label}</div>
         </div>
       ))}
     </div>

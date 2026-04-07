@@ -14,9 +14,9 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="bg-emerald-700 text-white shadow-md">
+    <nav className="bg-olive text-cream shadow-md">
       <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
-        <Link href="/" className="text-lg font-bold tracking-tight">
+        <Link href="/" className="font-serif text-xl font-bold tracking-tight">
           PantryChef
         </Link>
         <div className="flex gap-1">
@@ -31,8 +31,8 @@ export default function Navbar() {
                 href={link.href}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-emerald-900 text-white"
-                    : "text-emerald-100 hover:bg-emerald-600"
+                    ? "bg-olive-dark text-cream"
+                    : "text-cream-dark hover:bg-olive-light"
                 }`}
               >
                 {link.label}

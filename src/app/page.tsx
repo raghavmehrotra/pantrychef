@@ -40,10 +40,10 @@ export default function HomePage() {
   return (
     <div className="space-y-10">
       <div className="text-center py-8">
-        <h1 className="text-4xl font-bold text-gray-900">
+        <h1 className="font-serif text-4xl font-bold text-ink">
           What&apos;s in your pantry?
         </h1>
-        <p className="text-lg text-gray-500 mt-2">
+        <p className="text-lg text-ink-muted mt-2">
           Let&apos;s find something to cook.
         </p>
       </div>
@@ -51,13 +51,13 @@ export default function HomePage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link
           href="/pantry"
-          className="block p-6 bg-white rounded-xl border border-gray-200 hover:border-emerald-300 transition-colors"
+          className="block p-6 bg-cream-dark rounded-xl border border-amber-light/40 hover:border-amber transition-colors"
         >
-          <h2 className="text-lg font-semibold text-gray-900">Pantry</h2>
-          <p className="text-3xl font-bold text-emerald-600 mt-2">
+          <h2 className="font-serif text-lg font-semibold text-ink">Pantry</h2>
+          <p className="text-3xl font-bold text-olive mt-2">
             {pantry.length}
           </p>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-ink-muted mt-1">
             {pantry.length === 0
               ? "Add ingredients to get started"
               : "ingredients on hand"}
@@ -66,24 +66,24 @@ export default function HomePage() {
 
         <Link
           href="/recipes"
-          className="block p-6 bg-white rounded-xl border border-gray-200 hover:border-emerald-300 transition-colors"
+          className="block p-6 bg-cream-dark rounded-xl border border-amber-light/40 hover:border-amber transition-colors"
         >
-          <h2 className="text-lg font-semibold text-gray-900">Recipes</h2>
-          <p className="text-3xl font-bold text-emerald-600 mt-2">
+          <h2 className="font-serif text-lg font-semibold text-ink">Recipes</h2>
+          <p className="text-3xl font-bold text-olive mt-2">
             {recipes.length}
           </p>
-          <p className="text-sm text-gray-400 mt-1">recipes available</p>
+          <p className="text-sm text-ink-muted mt-1">recipes available</p>
         </Link>
 
         <Link
           href="/tracker"
-          className="block p-6 bg-white rounded-xl border border-gray-200 hover:border-emerald-300 transition-colors"
+          className="block p-6 bg-cream-dark rounded-xl border border-amber-light/40 hover:border-amber transition-colors"
         >
-          <h2 className="text-lg font-semibold text-gray-900">Today</h2>
-          <p className="text-3xl font-bold text-emerald-600 mt-2">
+          <h2 className="font-serif text-lg font-semibold text-ink">Today</h2>
+          <p className="text-3xl font-bold text-olive mt-2">
             {todayLogs.length}
           </p>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-ink-muted mt-1">
             {todayLogs.length === 0
               ? "No meals logged yet"
               : `meals logged (${dailyTotals.calories} cal)`}
@@ -93,7 +93,7 @@ export default function HomePage() {
 
       {todayLogs.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">
+          <h2 className="font-serif text-lg font-semibold text-ink mb-3">
             Today&apos;s Nutrition
           </h2>
           <NutritionLabel nutrition={dailyTotals} />
@@ -102,12 +102,12 @@ export default function HomePage() {
 
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="font-serif text-lg font-semibold text-ink">
             {pantry.length > 0 ? "Top Recipe Matches" : "Featured Recipes"}
           </h2>
           <Link
             href="/recipes"
-            className="text-sm text-emerald-600 hover:text-emerald-700"
+            className="text-sm text-olive hover:text-olive-dark"
           >
             View all
           </Link>

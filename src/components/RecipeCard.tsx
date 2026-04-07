@@ -32,8 +32,8 @@ export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
     <div
       className={`border rounded-xl p-4 transition-all ${
         matchPercent === 100
-          ? "border-emerald-400 bg-emerald-50"
-          : "border-gray-200 bg-white"
+          ? "border-olive bg-olive/5"
+          : "border-amber-light/40 bg-cream-dark"
       }`}
     >
       <div
@@ -42,57 +42,57 @@ export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
       >
         <div className="flex items-start justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">{recipe.name}</h3>
-            <p className="text-sm text-gray-500 mt-1">{recipe.description}</p>
+            <h3 className="font-serif text-lg font-semibold text-ink">{recipe.name}</h3>
+            <p className="text-sm text-ink-muted mt-1">{recipe.description}</p>
           </div>
           {matchPercent !== null && (
             <span
               className={`shrink-0 ml-3 px-2 py-1 rounded-full text-xs font-medium ${
                 matchPercent === 100
-                  ? "bg-emerald-200 text-emerald-800"
+                  ? "bg-olive/15 text-olive-dark"
                   : matchPercent >= 50
-                  ? "bg-yellow-100 text-yellow-800"
-                  : "bg-gray-100 text-gray-600"
+                  ? "bg-amber-light/30 text-amber-dark"
+                  : "bg-cream text-ink-muted"
               }`}
             >
               {matchedCount}/{totalIngredients} ingredients
             </span>
           )}
         </div>
-        <div className="flex gap-4 mt-2 text-xs text-gray-400">
+        <div className="flex gap-4 mt-2 text-xs text-ink-muted">
           <span>Prep: {recipe.prepTime}m</span>
           <span>Cook: {recipe.cookTime}m</span>
           <span>{recipe.nutrition.calories} cal/serving</span>
         </div>
         {matchPercent === 100 && (
-          <div className="mt-2 text-xs font-medium text-emerald-600">
+          <div className="mt-2 text-xs font-medium text-olive">
             Ready to cook!
           </div>
         )}
       </div>
 
       {expanded && (
-        <div className="mt-4 border-t pt-4 space-y-4">
+        <div className="mt-4 border-t border-amber-light/30 pt-4 space-y-4">
           <div>
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">Ingredients</h4>
-            <ul className="text-sm text-gray-600 space-y-1">
+            <h4 className="text-sm font-semibold text-ink-light mb-2">Ingredients</h4>
+            <ul className="text-sm text-ink-light space-y-1">
               {recipe.ingredients.map((ing) => (
                 <li key={ing.name} className="flex justify-between">
                   <Link
                     href={`/recipes/${encodeURIComponent(ing.name)}`}
-                    className="text-emerald-700 hover:underline"
+                    className="text-olive hover:underline"
                   >
                     {ing.name}
                   </Link>
-                  <span className="text-gray-400">{ing.amount}</span>
+                  <span className="text-ink-muted">{ing.amount}</span>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">Instructions</h4>
-            <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+            <h4 className="text-sm font-semibold text-ink-light mb-2">Instructions</h4>
+            <ol className="text-sm text-ink-light space-y-1 list-decimal list-inside">
               {recipe.instructions.map((step, i) => (
                 <li key={i}>{step}</li>
               ))}
@@ -100,21 +100,21 @@ export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">
+            <h4 className="text-sm font-semibold text-ink-light mb-2">
               Nutrition (per serving)
             </h4>
             <NutritionLabel nutrition={recipe.nutrition} />
           </div>
 
           <div className="flex items-center gap-3 pt-2">
-            <label className="text-sm text-gray-600">Servings:</label>
+            <label className="text-sm text-ink-light">Servings:</label>
             <input
               type="number"
               min={0.5}
               step={0.5}
               value={servings}
               onChange={(e) => setServings(Number(e.target.value))}
-              className="w-20 border rounded-md px-2 py-1 text-sm"
+              className="w-20 border border-amber-light/40 rounded-md px-2 py-1 text-sm bg-cream text-ink"
               onClick={(e) => e.stopPropagation()}
             />
             <button
@@ -122,7 +122,7 @@ export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
                 e.stopPropagation();
                 handleLog();
               }}
-              className="px-4 py-1.5 bg-emerald-600 text-white text-sm rounded-md hover:bg-emerald-700 transition-colors"
+              className="px-4 py-1.5 bg-olive text-cream text-sm rounded-md hover:bg-olive-dark transition-colors"
             >
               {logged ? "Logged!" : "Log This Meal"}
             </button>
