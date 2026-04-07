@@ -10,6 +10,7 @@ interface AppContextType {
   pantryNames: string[];
   addToPantry: (name: string, qty: number, unit: string, category?: PantryCategory) => void;
   updatePantryItem: (name: string, qty: number, unit: string) => void;
+  updatePantryCategory: (name: string, category: PantryCategory) => void;
   removeFromPantry: (name: string) => void;
   clearPantry: () => void;
   mealLogs: MealLog[];
@@ -43,6 +44,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   function updatePantryItem(name: string, qty: number, unit: string) {
     setPantry((prev) =>
       prev.map((i) => (i.name === name ? { ...i, qty, unit } : i))
+    );
+  }
+
+  function updatePantryCategory(name: string, category: PantryCategory) {
+    setPantry((prev) =>
+      prev.map((i) => (i.name === name ? { ...i, category } : i))
     );
   }
 
@@ -89,6 +96,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         pantryNames,
         addToPantry,
         updatePantryItem,
+        updatePantryCategory,
         removeFromPantry,
         clearPantry,
         mealLogs,
