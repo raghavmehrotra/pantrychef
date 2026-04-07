@@ -57,10 +57,10 @@ export default function HomePage() {
             className={`animate-fade-up animate-bounce-subtle group block p-8 bg-cream-dark rounded-2xl border border-cream-dark border-t-4 ${card.accent} shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200 text-center`}
             style={{ animationDelay: `${300 + i * 120}ms`, "--bounce-delay": `${i * 0.4}s` } as React.CSSProperties}
           >
-            <h2 className="font-serif text-xl font-semibold text-ink">
+            <h2 className="font-serif text-2xl font-semibold text-ink">
               {card.title}
             </h2>
-            <p className="text-sm text-ink-muted mt-2">{card.description}</p>
+            <p className="text-base text-ink-muted mt-2">{card.description}</p>
             <span
               className={`${card.arrow} group-hover:translate-x-1 transition-transform duration-200 mt-4 inline-block text-lg`}
             >
