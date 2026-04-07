@@ -13,7 +13,7 @@ has to make the recipe
 - /recipes/:item --> this shows a list of recipes that contain :item. The route is dynamic.
 - /tracker --> allows the user to log their meals and track their macros.
 
-The style is meant to be minimal, polished with no distractions. The focus should
+The style is meant to be minimal, yet inviting. Make sure the layout isn't boring. The focus should
 be the actual content of the app.
 
 In its current iteration, the app does not store state. This means that details are
