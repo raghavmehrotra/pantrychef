@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
-import { recipes } from "@/data/recipes";
 import NutritionLabel from "@/components/NutritionLabel";
 
 export default function TrackerPage() {
-  const { mealLogs, logMeal, removeMealLog } = useApp();
-  const [selectedRecipe, setSelectedRecipe] = useState(recipes[0]?.id ?? "");
+  const { allRecipes, mealLogs, logMeal, removeMealLog } = useApp();
+  const [selectedRecipe, setSelectedRecipe] = useState(allRecipes[0]?.id ?? "");
   const [servings, setServings] = useState(1);
   const [justLogged, setJustLogged] = useState(false);
 
@@ -63,7 +62,7 @@ export default function TrackerPage() {
               onChange={(e) => setSelectedRecipe(e.target.value)}
               className="w-full border border-amber-light/40 bg-cream rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-olive"
             >
-              {recipes.map((r) => (
+              {allRecipes.map((r) => (
                 <option key={r.id} value={r.id}>
                   {r.name}
                 </option>

@@ -1,7 +1,6 @@
 "use client";
 
 import { use } from "react";
-import { recipes } from "@/data/recipes";
 import { useApp } from "@/context/AppContext";
 import RecipeCard from "@/components/RecipeCard";
 
@@ -12,11 +11,11 @@ export default function IngredientPage({
 }) {
   const { name } = use(params);
   const ingredientName = decodeURIComponent(name);
-  const { pantryNames, addToPantry, removeFromPantry } = useApp();
+  const { pantryNames, allRecipes, addToPantry, removeFromPantry } = useApp();
 
   const isInPantry = pantryNames.includes(ingredientName);
 
-  const matchingRecipes = recipes.filter((recipe) =>
+  const matchingRecipes = allRecipes.filter((recipe) =>
     recipe.ingredients.some((ing) => ing.name === ingredientName)
   );
 

@@ -24,6 +24,8 @@ interface AppContextType {
   removeGroceryItem: (name: string) => void;
   clearGroceryList: () => void;
   movePurchasedToPantry: () => number;
+  allRecipes: Recipe[];
+  addRecipe: (recipe: Recipe) => void;
   mealLogs: MealLog[];
   logMeal: (recipeId: string, servings: number) => void;
   removeMealLog: (id: string) => void;
@@ -34,6 +36,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [pantry, setPantry] = useState<PantryItem[]>([]);
   const [groceryList, setGroceryList] = useState<GroceryItem[]>([]);
+  const [allRecipes, setAllRecipes] = useState<Recipe[]>(recipes);
   const [mealLogs, setMealLogs] = useState<MealLog[]>([]);
 
   const pantryNames = pantry.map((item) => item.name);
@@ -149,8 +152,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return checked.length;
   }
 
+  function addRecipe(recipe: Recipe) {
+    setAllRecipes((prev) => [...prev, recipe]);
+  }
+
   function logMeal(recipeId: string, servings: number) {
-    const recipe = recipes.find((r) => r.id === recipeId);
+    const recipe = allRecipes.find((r) => r.id === recipeId);
     if (!recipe) return;
 
     const nutrition: NutritionInfo = {
@@ -196,6 +203,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         removeGroceryItem,
         clearGroceryList,
         movePurchasedToPantry,
+        allRecipes,
+        addRecipe,
         mealLogs,
         logMeal,
         removeMealLog,
