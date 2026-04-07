@@ -13,7 +13,7 @@ const CATEGORY_STYLE: Record<PantryCategory, { border: string; heading: string; 
   "meat":          { border: "border-t-red-400",    heading: "text-red-700",     bg: "bg-red-50" },
   "vegetables":    { border: "border-t-olive",      heading: "text-olive-dark",  bg: "bg-olive/5" },
   "grains":        { border: "border-t-amber",      heading: "text-amber-dark",  bg: "bg-amber-light/15" },
-  "spices & oils": { border: "border-t-ink-light",  heading: "text-ink-light",   bg: "bg-ink/5" },
+  "spices, oils & sauces": { border: "border-t-ink-light",  heading: "text-ink-light",   bg: "bg-ink/5" },
   "fruits":        { border: "border-t-orange-400",  heading: "text-orange-700",  bg: "bg-orange-50" },
   "snacks":        { border: "border-t-violet-400", heading: "text-violet-700",  bg: "bg-violet-50" },
 };

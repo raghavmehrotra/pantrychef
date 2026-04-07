@@ -4,7 +4,7 @@ export const DEFAULT_UNIT: Record<PantryCategory, string> = {
   "meat": "lb",
   "vegetables": "unit",
   "grains": "cup",
-  "spices & oils": "oz",
+  "spices, oils & sauces": "oz",
   "fruits": "unit",
   "snacks": "unit",
 };
@@ -61,25 +61,25 @@ const INGREDIENT_CATEGORIES: Record<string, PantryCategory> = {
   "chickpeas": "grains",
 
   // Spices & Oils
-  "soy sauce": "spices & oils",
-  "garlic": "spices & oils",
-  "olive oil": "spices & oils",
-  "butter": "spices & oils",
-  "salt": "spices & oils",
-  "pepper": "spices & oils",
-  "cumin": "spices & oils",
-  "paprika": "spices & oils",
-  "chili powder": "spices & oils",
-  "oregano": "spices & oils",
-  "basil": "spices & oils",
-  "thyme": "spices & oils",
-  "cinnamon": "spices & oils",
-  "ginger": "spices & oils",
-  "vinegar": "spices & oils",
-  "honey": "spices & oils",
-  "hot sauce": "spices & oils",
-  "sesame oil": "spices & oils",
-  "vegetable oil": "spices & oils",
+  "soy sauce": "spices, oils & sauces",
+  "garlic": "spices, oils & sauces",
+  "olive oil": "spices, oils & sauces",
+  "butter": "spices, oils & sauces",
+  "salt": "spices, oils & sauces",
+  "pepper": "spices, oils & sauces",
+  "cumin": "spices, oils & sauces",
+  "paprika": "spices, oils & sauces",
+  "chili powder": "spices, oils & sauces",
+  "oregano": "spices, oils & sauces",
+  "basil": "spices, oils & sauces",
+  "thyme": "spices, oils & sauces",
+  "cinnamon": "spices, oils & sauces",
+  "ginger": "spices, oils & sauces",
+  "vinegar": "spices, oils & sauces",
+  "honey": "spices, oils & sauces",
+  "hot sauce": "spices, oils & sauces",
+  "sesame oil": "spices, oils & sauces",
+  "vegetable oil": "spices, oils & sauces",
 
   // Fruits
   "lemon": "fruits",
@@ -120,7 +120,7 @@ export function classifyIngredient(name: string): PantryCategory {
   // Simple keyword fallback
   if (["chicken", "beef", "pork", "lamb", "fish", "shrimp", "turkey", "salmon", "tuna"].some(k => normalized.includes(k))) return "meat";
   if (["berry", "fruit", "apple", "lemon", "lime", "orange", "mango", "banana"].some(k => normalized.includes(k))) return "fruits";
-  if (["oil", "sauce", "spice", "herb", "powder", "seed"].some(k => normalized.includes(k))) return "spices & oils";
+  if (["oil", "sauce", "spice", "herb", "powder", "seed"].some(k => normalized.includes(k))) return "spices, oils & sauces";
   if (["bean", "rice", "pasta", "bread", "flour", "grain", "oat", "wheat", "tortilla"].some(k => normalized.includes(k))) return "grains";
   if (["milk", "cheese", "yogurt", "cream", "egg", "nut", "chip", "cracker"].some(k => normalized.includes(k))) return "snacks";
   return "vegetables"; // default fallback

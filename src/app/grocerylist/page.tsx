@@ -11,7 +11,7 @@ const CATEGORY_STYLE: Record<PantryCategory, { dot: string }> = {
   "meat":          { dot: "bg-red-400" },
   "vegetables":    { dot: "bg-olive" },
   "grains":        { dot: "bg-amber" },
-  "spices & oils": { dot: "bg-ink-light" },
+  "spices, oils & sauces": { dot: "bg-ink-light" },
   "fruits":        { dot: "bg-orange-400" },
   "snacks":        { dot: "bg-violet-400" },
 };
