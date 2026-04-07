@@ -1,13 +1,14 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
-import { MealLog, NutritionInfo, PantryItem } from "@/types";
+import { MealLog, NutritionInfo, PantryCategory, PantryItem } from "@/types";
 import { recipes } from "@/data/recipes";
+import { classifyIngredient } from "@/data/categories";
 
 interface AppContextType {
   pantry: PantryItem[];
   pantryNames: string[];
-  addToPantry: (name: string, qty: number, unit: string) => void;
+  addToPantry: (name: string, qty: number, unit: string, category?: PantryCategory) => void;
   updatePantryItem: (name: string, qty: number, unit: string) => void;
   removeFromPantry: (name: string) => void;
   clearPantry: () => void;
@@ -24,7 +25,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const pantryNames = pantry.map((item) => item.name);
 
-  function addToPantry(name: string, qty: number = 1, unit: string = "unit") {
+  function addToPantry(name: string, qty: number = 1, unit: string = "unit", category?: PantryCategory) {
     const normalized = name.toLowerCase().trim();
     if (!normalized) return;
     const existing = pantry.find((i) => i.name === normalized);
@@ -35,7 +36,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         )
       );
     } else {
-      setPantry((prev) => [...prev, { name: normalized, qty, unit }]);
+      setPantry((prev) => [...prev, { name: normalized, qty, unit, category: category ?? classifyIngredient(normalized) }]);
     }
   }
 

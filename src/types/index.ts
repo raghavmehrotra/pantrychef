@@ -24,10 +24,22 @@ export interface Recipe {
   tags: string[];
 }
 
+export type PantryCategory = "meat" | "vegetables" | "grains" | "spices & oils" | "fruits" | "snacks";
+
+export const PANTRY_CATEGORIES: PantryCategory[] = [
+  "meat",
+  "vegetables",
+  "grains",
+  "spices & oils",
+  "fruits",
+  "snacks",
+];
+
 export interface PantryItem {
   name: string;
   qty: number;
   unit: string;
+  category: PantryCategory;
 }
 
 export interface MealLog {

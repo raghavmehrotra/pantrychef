@@ -3,9 +3,19 @@
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { allIngredientNames } from "@/data/recipes";
+import { PANTRY_CATEGORIES, PantryCategory } from "@/types";
 import Link from "next/link";
 
 const UNITS = ["unit", "oz", "lb", "g", "kg", "cup", "tbsp", "tsp", "ml", "L"];
+
+const CATEGORY_STYLE: Record<PantryCategory, { border: string; heading: string; bg: string }> = {
+  "meat":          { border: "border-t-red-400",    heading: "text-red-700",     bg: "bg-red-50" },
+  "vegetables":    { border: "border-t-olive",      heading: "text-olive-dark",  bg: "bg-olive/5" },
+  "grains":        { border: "border-t-amber",      heading: "text-amber-dark",  bg: "bg-amber-light/15" },
+  "spices & oils": { border: "border-t-ink-light",  heading: "text-ink-light",   bg: "bg-ink/5" },
+  "fruits":        { border: "border-t-orange-400",  heading: "text-orange-700",  bg: "bg-orange-50" },
+  "snacks":        { border: "border-t-violet-400", heading: "text-violet-700",  bg: "bg-violet-50" },
+};
 
 export default function PantryPage() {
   const { pantry, pantryNames, addToPantry, updatePantryItem, removeFromPantry, clearPantry } = useApp();
@@ -17,6 +27,13 @@ export default function PantryPage() {
   const suggestions = allIngredientNames.filter(
     (name) => !pantryNames.includes(name)
   );
+
+  const grouped = PANTRY_CATEGORIES.reduce((acc, cat) => {
+    acc[cat] = pantry.filter((item) => item.category === cat);
+    return acc;
+  }, {} as Record<PantryCategory, typeof pantry>);
+
+  const nonEmptyCategories = PANTRY_CATEGORIES.filter((cat) => grouped[cat].length > 0);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -104,7 +121,7 @@ export default function PantryPage() {
       )}
 
       <div>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="font-serif text-lg font-semibold text-ink">
             Your Pantry ({pantry.length} {pantry.length === 1 ? "item" : "items"})
           </h2>
@@ -117,61 +134,81 @@ export default function PantryPage() {
             </button>
           )}
         </div>
+
         {pantry.length === 0 ? (
           <p className="text-ink-muted text-sm">
             No ingredients yet. Add some above to get started!
           </p>
         ) : (
-          <div className="border border-amber-light/40 rounded-xl overflow-hidden">
-            {pantry.map((item, i) => (
-              <div
-                key={item.name}
-                className={`flex items-center justify-between px-4 py-3 ${
-                  i !== pantry.length - 1 ? "border-b border-amber-light/30" : ""
-                } bg-cream-dark hover:bg-amber-light/10 transition-colors`}
-              >
-                <Link
-                  href={`/recipes/${encodeURIComponent(item.name)}`}
-                  className="text-ink font-medium hover:text-olive transition-colors capitalize"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {nonEmptyCategories.map((cat) => {
+              const style = CATEGORY_STYLE[cat];
+              const items = grouped[cat];
+              return (
+                <div
+                  key={cat}
+                  className={`rounded-xl border border-amber-light/30 border-t-4 ${style.border} overflow-hidden`}
                 >
-                  {item.name}
-                </Link>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1">
-                    <input
-                      type="number"
-                      min={0.25}
-                      step={0.25}
-                      value={item.qty}
-                      onChange={(e) =>
-                        updatePantryItem(item.name, Number(e.target.value), item.unit)
-                      }
-                      className="w-16 border border-amber-light/40 bg-cream rounded px-2 py-1 text-sm text-ink text-center focus:outline-none focus:ring-1 focus:ring-olive"
-                    />
-                    <select
-                      value={item.unit}
-                      onChange={(e) =>
-                        updatePantryItem(item.name, item.qty, e.target.value)
-                      }
-                      className="border border-amber-light/40 bg-cream rounded px-2 py-1 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-olive"
-                    >
-                      {UNITS.map((u) => (
-                        <option key={u} value={u}>{u}</option>
-                      ))}
-                    </select>
+                  <div className={`px-4 py-2 ${style.bg}`}>
+                    <h3 className={`font-serif text-sm font-semibold capitalize ${style.heading}`}>
+                      {cat}
+                      <span className="text-ink-muted font-normal ml-2 text-xs">
+                        {items.length}
+                      </span>
+                    </h3>
                   </div>
-                  <button
-                    onClick={() => removeFromPantry(item.name)}
-                    className="text-ink-muted hover:text-red-600 transition-colors p-1"
-                    aria-label={`Remove ${item.name}`}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                      <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clipRule="evenodd" />
-                    </svg>
-                  </button>
+                  <div>
+                    {items.map((item, i) => (
+                      <div
+                        key={item.name}
+                        className={`flex items-center justify-between px-4 py-2.5 ${
+                          i !== items.length - 1 ? "border-b border-amber-light/20" : ""
+                        } bg-cream-dark hover:bg-amber-light/10 transition-colors`}
+                      >
+                        <Link
+                          href={`/recipes/${encodeURIComponent(item.name)}`}
+                          className="text-sm text-ink font-medium hover:text-olive transition-colors capitalize"
+                        >
+                          {item.name}
+                        </Link>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min={0.25}
+                            step={0.25}
+                            value={item.qty}
+                            onChange={(e) =>
+                              updatePantryItem(item.name, Number(e.target.value), item.unit)
+                            }
+                            className="w-14 border border-amber-light/40 bg-cream rounded px-1.5 py-0.5 text-xs text-ink text-center focus:outline-none focus:ring-1 focus:ring-olive"
+                          />
+                          <select
+                            value={item.unit}
+                            onChange={(e) =>
+                              updatePantryItem(item.name, item.qty, e.target.value)
+                            }
+                            className="border border-amber-light/40 bg-cream rounded px-1.5 py-0.5 text-xs text-ink focus:outline-none focus:ring-1 focus:ring-olive"
+                          >
+                            {UNITS.map((u) => (
+                              <option key={u} value={u}>{u}</option>
+                            ))}
+                          </select>
+                          <button
+                            onClick={() => removeFromPantry(item.name)}
+                            className="text-ink-muted hover:text-red-600 transition-colors p-0.5"
+                            aria-label={`Remove ${item.name}`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+                              <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
