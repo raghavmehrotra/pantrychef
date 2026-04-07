@@ -18,6 +18,8 @@ interface AppContextType {
   groceryList: GroceryItem[];
   addToGroceryList: (name: string, qty?: number, unit?: string, category?: PantryCategory) => void;
   addRecipeToGroceryList: (recipe: Recipe) => number;
+  updateGroceryItem: (name: string, qty: number, unit: string) => void;
+  updateGroceryCategory: (name: string, category: PantryCategory) => void;
   toggleGroceryItem: (name: string) => void;
   removeGroceryItem: (name: string) => void;
   clearGroceryList: () => void;
@@ -111,6 +113,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return added;
   }
 
+  function updateGroceryItem(name: string, qty: number, unit: string) {
+    setGroceryList((prev) =>
+      prev.map((i) => (i.name === name ? { ...i, qty, unit } : i))
+    );
+  }
+
+  function updateGroceryCategory(name: string, category: PantryCategory) {
+    setGroceryList((prev) =>
+      prev.map((i) => (i.name === name ? { ...i, category } : i))
+    );
+  }
+
   function toggleGroceryItem(name: string) {
     setGroceryList((prev) =>
       prev.map((i) => (i.name === name ? { ...i, checked: !i.checked } : i))
@@ -176,6 +190,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         groceryList,
         addToGroceryList,
         addRecipeToGroceryList,
+        updateGroceryItem,
+        updateGroceryCategory,
         toggleGroceryItem,
         removeGroceryItem,
         clearGroceryList,

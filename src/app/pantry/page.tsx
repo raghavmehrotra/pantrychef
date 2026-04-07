@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { allIngredientNames } from "@/data/recipes";
-import { classifyIngredient } from "@/data/categories";
+import { classifyIngredient, DEFAULT_UNIT } from "@/data/categories";
 import { PANTRY_CATEGORIES, PantryCategory } from "@/types";
 import Link from "next/link";
 
@@ -52,8 +52,8 @@ export default function PantryPage() {
     addToPantry(trimmed, qty, unit, category);
     setInput("");
     setQty(1);
-    setUnit("unit");
     setCategory("vegetables");
+    setUnit(DEFAULT_UNIT["vegetables"]);
     setError("");
   }
 
@@ -73,7 +73,9 @@ export default function PantryPage() {
           onChange={(e) => {
             const val = e.target.value;
             setInput(val);
-            setCategory(classifyIngredient(val));
+            const cat = classifyIngredient(val);
+            setCategory(cat);
+            setUnit(DEFAULT_UNIT[cat]);
             setError("");
           }}
           placeholder="Ingredient name..."
@@ -99,7 +101,11 @@ export default function PantryPage() {
           </select>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value as PantryCategory)}
+            onChange={(e) => {
+              const cat = e.target.value as PantryCategory;
+              setCategory(cat);
+              setUnit(DEFAULT_UNIT[cat]);
+            }}
             className="border border-amber-light/40 bg-cream rounded-lg px-3 py-2 text-sm text-ink capitalize focus:outline-none focus:ring-2 focus:ring-olive"
           >
             {PANTRY_CATEGORIES.map((cat) => (
@@ -125,7 +131,7 @@ export default function PantryPage() {
             {suggestions.map((name) => (
               <button
                 key={name}
-                onClick={() => addToPantry(name, 1, "unit")}
+                onClick={() => { const cat = classifyIngredient(name); addToPantry(name, 1, DEFAULT_UNIT[cat], cat); }}
                 className="px-3 py-1 rounded-full bg-cream-dark text-ink-light text-sm hover:bg-olive/10 hover:text-olive-dark transition-colors"
               >
                 + {name}

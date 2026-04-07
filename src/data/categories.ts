@@ -1,5 +1,14 @@
 import { PantryCategory } from "@/types";
 
+export const DEFAULT_UNIT: Record<PantryCategory, string> = {
+  "meat": "lb",
+  "vegetables": "unit",
+  "grains": "cup",
+  "spices & oils": "oz",
+  "fruits": "unit",
+  "snacks": "unit",
+};
+
 const INGREDIENT_CATEGORIES: Record<string, PantryCategory> = {
   // Meat
   "chicken breast": "meat",
