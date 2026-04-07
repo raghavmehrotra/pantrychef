@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
 import RecipeCard from "@/components/RecipeCard";
 import { Recipe } from "@/types";
@@ -11,8 +12,10 @@ const EMPTY_INGREDIENT = { name: "", amount: "" };
 
 export default function RecipesPage() {
   const { pantryNames, allRecipes, addRecipe } = useApp();
+  const router = useRouter();
   const [filter, setFilter] = useState<Filter>("all");
   const [showForm, setShowForm] = useState(false);
+  const [search, setSearch] = useState("");
 
   // Form state
   const [name, setName] = useState("");
@@ -108,6 +111,29 @@ export default function RecipesPage() {
             : "Add ingredients to your pantry to see matching recipes."}
         </p>
       </div>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const trimmed = search.trim();
+          if (trimmed) router.push(`/recipes/${encodeURIComponent(trimmed.toLowerCase())}`);
+        }}
+        className="flex gap-2"
+      >
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search recipes by ingredient..."
+          className="flex-1 border border-amber-light/40 bg-cream rounded-lg px-4 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-olive"
+        />
+        <button
+          type="submit"
+          className="px-4 py-2 bg-olive text-cream text-sm font-medium rounded-lg hover:bg-olive-dark transition-colors"
+        >
+          Search
+        </button>
+      </form>
 
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
