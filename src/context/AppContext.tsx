@@ -21,6 +21,7 @@ interface AppContextType {
   toggleGroceryItem: (name: string) => void;
   removeGroceryItem: (name: string) => void;
   clearGroceryList: () => void;
+  movePurchasedToPantry: () => number;
   mealLogs: MealLog[];
   logMeal: (recipeId: string, servings: number) => void;
   removeMealLog: (id: string) => void;
@@ -124,6 +125,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setGroceryList([]);
   }
 
+  function movePurchasedToPantry(): number {
+    const checked = groceryList.filter((i) => i.checked);
+    if (checked.length === 0) return 0;
+    for (const item of checked) {
+      addToPantry(item.name, item.qty, item.unit, item.category);
+    }
+    setGroceryList((prev) => prev.filter((i) => !i.checked));
+    return checked.length;
+  }
+
   function logMeal(recipeId: string, servings: number) {
     const recipe = recipes.find((r) => r.id === recipeId);
     if (!recipe) return;
@@ -168,6 +179,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         toggleGroceryItem,
         removeGroceryItem,
         clearGroceryList,
+        movePurchasedToPantry,
         mealLogs,
         logMeal,
         removeMealLog,
