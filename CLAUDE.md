@@ -20,6 +20,20 @@ be the actual content of the app.
 In its current iteration, the app does not store state. This means that details are
 lost upon app refresh.
 
+Data model (defined in src/types/index.ts):
+- Recipe { id, name, description, ingredients: RecipeIngredient[], instructions: string[], servings, prepTime, cookTime, nutrition: NutritionInfo, tags: string[] }
+- RecipeIngredient { name, amount (string, e.g. "1 lb") }
+- NutritionInfo { calories, protein, carbs, fat, fiber }
+- PantryItem { name, qty, unit, category: PantryCategory }
+- GroceryItem { name, qty, unit, category: PantryCategory, checked }
+- MealLog { id, recipeId, recipeName, servings, nutrition: NutritionInfo, date }
+- PantryCategory = "meat" | "vegetables" | "grains" | "spices, oils & sauces" | "fruits" | "snacks"
+
+State is managed in src/context/AppContext.tsx (React context, no persistence).
+10 seed recipes are defined in src/data/recipes.ts. User-created recipes are appended at runtime.
+Ingredient classification (src/data/categories.ts) auto-assigns categories with keyword fallback.
+Unit conversion (src/data/units.ts) handles weight (g/kg/oz/lb) and volume (ml/L/cup/tbsp/tsp).
+
 Tech stack:
 Next.js
 Tailwind CSS
