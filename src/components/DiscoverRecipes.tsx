@@ -42,21 +42,37 @@ export default function DiscoverRecipes() {
     setLoading(false);
   }
 
+  function handleClear() {
+    setResults([]);
+    setSearched(false);
+    setQuery("");
+  }
+
   function isSaved(recipe: Recipe) {
     return allRecipes.some((r) => r.id === recipe.id);
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="font-serif text-lg font-semibold text-ink">Discover Recipes</h2>
-        <button
-          onClick={handleRandom}
-          disabled={loading}
-          className="px-3 py-1.5 text-sm font-medium rounded-lg bg-amber/15 text-amber-dark hover:bg-amber/25 transition-colors disabled:opacity-50"
-        >
-          Random Recipe
-        </button>
+      <div className="flex items-center justify-between h-10">
+        <h2 className="font-serif text-lg font-semibold text-ink">Discover</h2>
+        <div className="flex gap-2">
+          {results.length > 0 && (
+            <button
+              onClick={handleClear}
+              className="px-3 py-1.5 text-sm font-medium rounded-lg text-red-600 hover:text-red-800 transition-colors"
+            >
+              Clear
+            </button>
+          )}
+          <button
+            onClick={handleRandom}
+            disabled={loading}
+            className="px-3 py-1.5 text-sm font-medium rounded-lg bg-amber/15 text-amber-dark hover:bg-amber/25 transition-colors disabled:opacity-50"
+          >
+            Random Recipe
+          </button>
+        </div>
       </div>
 
       <form onSubmit={handleSearch} className="flex gap-2">
@@ -72,7 +88,7 @@ export default function DiscoverRecipes() {
           disabled={loading}
           className="px-4 py-2 bg-olive text-cream text-sm font-medium rounded-lg hover:bg-olive-dark transition-colors disabled:opacity-50"
         >
-          {loading ? "Searching..." : "Search"}
+          {loading ? "Searching..." : "Discover"}
         </button>
       </form>
 
