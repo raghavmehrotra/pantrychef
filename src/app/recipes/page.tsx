@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
 import RecipeCard from "@/components/RecipeCard";
+import DiscoverRecipes from "@/components/DiscoverRecipes";
 import { Recipe } from "@/types";
 
 type Filter = "all" | "ready" | "almost";
@@ -337,6 +338,10 @@ export default function RecipesPage() {
           ))}
         </div>
       )}
+
+      <div className="border-t border-amber-light/30 pt-8">
+        <DiscoverRecipes />
+      </div>
     </div>
   );
 }
