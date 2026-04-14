@@ -1,11 +1,12 @@
 import { auth } from "@clerk/nextjs/server";
-import { supabase } from "@/lib/supabase";
+import { createAuthenticatedClient } from "@/lib/supabase";
 import { Recipe } from "@/types";
 
 export async function GET() {
   const { userId } = await auth();
   if (!userId) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
+  const supabase = await createAuthenticatedClient();
   const { data, error } = await supabase
     .from("user_recipes")
     .select("recipe_id, data")
@@ -21,6 +22,7 @@ export async function POST(request: Request) {
   const { userId } = await auth();
   if (!userId) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
+  const supabase = await createAuthenticatedClient();
   const recipe: Recipe = await request.json();
 
   const { error } = await supabase.from("user_recipes").upsert(
@@ -36,6 +38,7 @@ export async function DELETE(request: Request) {
   const { userId } = await auth();
   if (!userId) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
+  const supabase = await createAuthenticatedClient();
   const { recipeId } = await request.json();
 
   const { error } = await supabase
