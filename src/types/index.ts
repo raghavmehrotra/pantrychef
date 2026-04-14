@@ -20,8 +20,13 @@ export interface Recipe {
   servings: number;
   prepTime: number;
   cookTime: number;
-  nutrition: NutritionInfo;
+  nutrition?: NutritionInfo;
   tags: string[];
+  source?: "seed" | "user" | "mealdb";
+  image?: string;
+  area?: string;
+  mealCategory?: string;
+  mealdbId?: string;
 }
 
 export type PantryCategory = "meat" | "vegetables" | "grains" | "spices, oils & sauces" | "fruits" | "snacks";
@@ -55,6 +60,5 @@ export interface MealLog {
   recipeId: string;
   recipeName: string;
   servings: number;
-  nutrition: NutritionInfo;
   date: string;
 }

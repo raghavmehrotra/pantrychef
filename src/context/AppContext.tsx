@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
-import { GroceryItem, MealLog, NutritionInfo, PantryCategory, PantryItem } from "@/types";
+import { GroceryItem, MealLog, PantryCategory, PantryItem } from "@/types";
 import { recipes } from "@/data/recipes";
 import { classifyIngredient } from "@/data/categories";
 import { convertUnits, parseAmount } from "@/data/units";
@@ -160,20 +160,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const recipe = allRecipes.find((r) => r.id === recipeId);
     if (!recipe) return;
 
-    const nutrition: NutritionInfo = {
-      calories: Math.round(recipe.nutrition.calories * servings),
-      protein: Math.round(recipe.nutrition.protein * servings),
-      carbs: Math.round(recipe.nutrition.carbs * servings),
-      fat: Math.round(recipe.nutrition.fat * servings),
-      fiber: Math.round(recipe.nutrition.fiber * servings),
-    };
-
     const log: MealLog = {
       id: Date.now().toString(),
       recipeId,
       recipeName: recipe.name,
       servings,
-      nutrition,
       date: new Date().toISOString().split("T")[0],
     };
 

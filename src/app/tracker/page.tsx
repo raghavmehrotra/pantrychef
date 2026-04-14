@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
-import NutritionLabel from "@/components/NutritionLabel";
 
 export default function TrackerPage() {
   const { allRecipes, mealLogs, logMeal, removeMealLog } = useApp();
@@ -12,17 +11,7 @@ export default function TrackerPage() {
 
   const today = new Date().toISOString().split("T")[0];
   const todayLogs = mealLogs.filter((log) => log.date === today);
-
-  const dailyTotals = todayLogs.reduce(
-    (acc, log) => ({
-      calories: acc.calories + log.nutrition.calories,
-      protein: acc.protein + log.nutrition.protein,
-      carbs: acc.carbs + log.nutrition.carbs,
-      fat: acc.fat + log.nutrition.fat,
-      fiber: acc.fiber + log.nutrition.fiber,
-    }),
-    { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 }
-  );
+  const olderLogs = mealLogs.filter((log) => log.date !== today);
 
   function handleLog(e: React.FormEvent) {
     e.preventDefault();
@@ -35,21 +24,8 @@ export default function TrackerPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-serif text-2xl font-bold text-ink">Nutrition Tracker</h1>
-        <p className="text-ink-muted mt-1">Log meals and track your daily macros.</p>
-      </div>
-
-      <div>
-        <h2 className="font-serif text-lg font-semibold text-ink mb-3">
-          Today&apos;s Summary
-        </h2>
-        {todayLogs.length === 0 ? (
-          <p className="text-ink-muted text-sm">
-            No meals logged today. Use the form below to get started.
-          </p>
-        ) : (
-          <NutritionLabel nutrition={dailyTotals} />
-        )}
+        <h1 className="font-serif text-2xl font-bold text-ink">Meal Diary</h1>
+        <p className="text-ink-muted mt-1">Log what you ate and when.</p>
       </div>
 
       <div>
@@ -91,9 +67,7 @@ export default function TrackerPage() {
 
       {todayLogs.length > 0 && (
         <div>
-          <h2 className="font-serif text-lg font-semibold text-ink mb-3">
-            Today&apos;s Meals
-          </h2>
+          <h2 className="font-serif text-lg font-semibold text-ink mb-3">Today</h2>
           <div className="space-y-2">
             {todayLogs.map((log) => (
               <div
@@ -101,28 +75,53 @@ export default function TrackerPage() {
                 className="flex items-center justify-between border border-amber-light/40 rounded-lg p-3 bg-cream-dark"
               >
                 <div>
-                  <span className="font-medium text-ink">
-                    {log.recipeName}
-                  </span>
+                  <span className="font-medium text-ink">{log.recipeName}</span>
                   <span className="text-ink-muted text-sm ml-2">
                     x{log.servings} serving{log.servings !== 1 && "s"}
                   </span>
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-ink-muted">
-                    {log.nutrition.calories} cal | {log.nutrition.protein}g protein
-                  </span>
-                  <button
-                    onClick={() => removeMealLog(log.id)}
-                    className="text-red-500 hover:text-red-700 text-sm"
-                  >
-                    Remove
-                  </button>
-                </div>
+                <button
+                  onClick={() => removeMealLog(log.id)}
+                  className="text-red-500 hover:text-red-700 text-sm"
+                >
+                  Remove
+                </button>
               </div>
             ))}
           </div>
         </div>
+      )}
+
+      {olderLogs.length > 0 && (
+        <div>
+          <h2 className="font-serif text-lg font-semibold text-ink mb-3">Earlier</h2>
+          <div className="space-y-2">
+            {olderLogs.map((log) => (
+              <div
+                key={log.id}
+                className="flex items-center justify-between border border-amber-light/40 rounded-lg p-3 bg-cream-dark"
+              >
+                <div>
+                  <span className="font-medium text-ink">{log.recipeName}</span>
+                  <span className="text-ink-muted text-sm ml-2">
+                    x{log.servings} serving{log.servings !== 1 && "s"}
+                  </span>
+                  <span className="text-ink-muted text-xs ml-2">{log.date}</span>
+                </div>
+                <button
+                  onClick={() => removeMealLog(log.id)}
+                  className="text-red-500 hover:text-red-700 text-sm"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {mealLogs.length === 0 && (
+        <p className="text-ink-muted text-sm">No meals logged yet. Use the form above to get started.</p>
       )}
     </div>
   );
