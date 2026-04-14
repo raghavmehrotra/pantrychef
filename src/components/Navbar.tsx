@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignInButton, SignOutButton, UserButton, useAuth } from "@clerk/nextjs";
 
 const links = [
   { href: "/", label: "Home" },
@@ -14,6 +14,7 @@ const links = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { isSignedIn } = useAuth();
 
   return (
     <nav className="bg-olive text-cream shadow-md">
@@ -69,16 +70,15 @@ export default function Navbar() {
             );
           })}
           <div className="ml-3">
-            <SignedOut>
+            {isSignedIn ? (
+              <UserButton />
+            ) : (
               <SignInButton>
                 <button className="px-3 py-1.5 rounded-md text-sm font-medium text-cream-dark hover:bg-olive-light transition-colors">
                   Sign In
                 </button>
               </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
+            )}
           </div>
         </div>
       </div>
