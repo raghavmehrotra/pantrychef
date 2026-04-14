@@ -22,13 +22,13 @@ interface SyncSetters {
 export function useSupabaseSync(state: SyncState, setters: SyncSetters) {
   const { isSignedIn } = useAuth();
   const hasLoadedRef = useRef(false);
-  const isLoadingRef = useRef(false);
+  const isSyncReady = useRef(false);
   const debounceTimers = useRef<Record<string, NodeJS.Timeout>>({});
 
   // Load all user data from Supabase when they sign in
   const loadData = useCallback(async () => {
-    if (isLoadingRef.current) return;
-    isLoadingRef.current = true;
+    if (hasLoadedRef.current) return;
+    hasLoadedRef.current = true;
     setters.setIsLoading(true);
 
     try {
@@ -48,21 +48,25 @@ export function useSupabaseSync(state: SyncState, setters: SyncSetters) {
     }
 
     setters.setIsLoading(false);
-    isLoadingRef.current = false;
+
+    // Enable saving only after load completes and React settles
+    setTimeout(() => {
+      isSyncReady.current = true;
+    }, 1000);
   }, [setters]);
 
   // Trigger load when user signs in
   useEffect(() => {
     if (isSignedIn && !hasLoadedRef.current) {
-      hasLoadedRef.current = true;
       loadData();
     }
     if (!isSignedIn) {
       hasLoadedRef.current = false;
+      isSyncReady.current = false;
     }
   }, [isSignedIn, loadData]);
 
-  // Debounce helper — waits 500ms after last change before saving
+  // Debounce helper
   const debouncedSave = useCallback(
     (key: string, saveFn: () => Promise<void>) => {
       if (debounceTimers.current[key]) {
@@ -75,9 +79,9 @@ export function useSupabaseSync(state: SyncState, setters: SyncSetters) {
     []
   );
 
-  // Auto-save pantry when it changes
+  // Auto-save pantry
   useEffect(() => {
-    if (!isSignedIn || !hasLoadedRef.current) return;
+    if (!isSignedIn || !isSyncReady.current) return;
     debouncedSave("pantry", () =>
       fetch("/api/pantry", {
         method: "POST",
@@ -87,9 +91,9 @@ export function useSupabaseSync(state: SyncState, setters: SyncSetters) {
     );
   }, [state.pantry, isSignedIn, debouncedSave]);
 
-  // Auto-save grocery list when it changes
+  // Auto-save grocery list
   useEffect(() => {
-    if (!isSignedIn || !hasLoadedRef.current) return;
+    if (!isSignedIn || !isSyncReady.current) return;
     debouncedSave("grocery", () =>
       fetch("/api/grocery", {
         method: "POST",
@@ -99,9 +103,9 @@ export function useSupabaseSync(state: SyncState, setters: SyncSetters) {
     );
   }, [state.groceryList, isSignedIn, debouncedSave]);
 
-  // Auto-save user recipes when they change
+  // Auto-save user recipes
   useEffect(() => {
-    if (!isSignedIn || !hasLoadedRef.current) return;
+    if (!isSignedIn || !isSyncReady.current) return;
     debouncedSave("recipes", async () => {
       for (const recipe of state.userRecipes) {
         await fetch("/api/recipes", {
@@ -112,4 +116,16 @@ export function useSupabaseSync(state: SyncState, setters: SyncSetters) {
       }
     });
   }, [state.userRecipes, isSignedIn, debouncedSave]);
+
+  // Auto-save meal logs
+  useEffect(() => {
+    if (!isSignedIn || !isSyncReady.current) return;
+    debouncedSave("meals", () =>
+      fetch("/api/meals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(state.mealLogs),
+      }).then(() => {})
+    );
+  }, [state.mealLogs, isSignedIn, debouncedSave]);
 }

@@ -12,7 +12,7 @@ const url = rawUrl.startsWith("https://") ? rawUrl : `https://${rawUrl}`;
  */
 export async function createAuthenticatedClient() {
   const { getToken } = await auth();
-  const token = await getToken({ template: "supabase" });
+  const token = await getToken();
 
   return createClient(url, key, {
     global: {
