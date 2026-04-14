@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 
 const cards = [
   {
@@ -34,13 +35,16 @@ const cards = [
 ];
 
 export default function HomePage() {
+  const { user } = useUser();
+  const firstName = user?.firstName;
+
   return (
     <div className="min-h-[calc(100vh-12rem)] flex flex-col items-center justify-center">
       <h1
         className="animate-fade-up font-serif text-5xl md:text-6xl font-bold text-ink tracking-tight text-center"
         style={{ animationDelay: "0ms" }}
       >
-        Welcome to PantryChef, R!
+        {firstName ? `Welcome to PantryChef, ${firstName}!` : "Welcome to PantryChef!"}
       </h1>
       <p
         className="animate-fade-up text-lg text-ink-muted mt-3 text-center"
