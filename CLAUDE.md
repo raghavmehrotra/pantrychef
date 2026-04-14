@@ -7,7 +7,7 @@ ingredients from their pantry.
 
 There are 6 distinct pages/routes in the app:
 - / --> welcome page with navigation cards to the main sections.
-- /pantry --> this is meant to display the current state of the user's pantry. This is editable in that the user can add and remove ingredients from the pantry too. Items are categorized into 6 groups (meat, vegetables, grains, spices & oils, fruits, snacks) and support drag-and-drop recategorization.
+- /pantry --> this is meant to display the current state of the user's pantry. This is editable in that the user can add and remove ingredients from the pantry too. Items are categorized into 6 groups (meat, vegetables, grains, spices, oils & sauces, fruits, snacks) and support drag-and-drop recategorization.
 - /recipes --> a list of recipes that the user can try. They are ranked in the order of how many ingredients the user already
 has to make the recipe
 - /recipes/:item --> this shows a list of recipes that contain :item. The route is dynamic.
@@ -34,6 +34,21 @@ State is managed in src/context/AppContext.tsx (React context, no persistence).
 Ingredient classification (src/data/categories.ts) auto-assigns categories with keyword fallback.
 Unit conversion (src/data/units.ts) handles weight (g/kg/oz/lb) and volume (ml/L/cup/tbsp/tsp).
 
+Auth & persistence:
+- Clerk for authentication (optional — all pages are public). ClerkProvider wraps the app in layout.tsx.
+  Clerk middleware in src/middleware.ts (all routes public, ready for protected routes).
+- Supabase for data persistence (logged-in users only). 4 tables: pantry_items, grocery_items, user_recipes, meal_logs.
+  API routes in src/app/api/{pantry,grocery,recipes,meals}/route.ts proxy Supabase, authenticated via Clerk userId.
+  Sync hook (src/hooks/useSupabaseSync.ts) loads data on login, auto-saves on state changes with 500ms debounce.
+  Supabase client in src/lib/supabase.ts.
+- Logged-out users get ephemeral in-memory state (no persistence).
+
+External APIs:
+- TheMealDB (free, no key) for recipe discovery. Server-side fetch in src/lib/mealdb.ts.
+  API routes in src/app/api/mealdb/{search,random}/route.ts. Client component: src/components/DiscoverRecipes.tsx.
+
 Tech stack:
 Next.js
 Tailwind CSS
+Clerk (auth)
+Supabase (database)

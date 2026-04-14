@@ -1,11 +1,11 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { GroceryItem, MealLog, PantryCategory, PantryItem } from "@/types";
-import { recipes } from "@/data/recipes";
+import { createContext, useContext, useState, useMemo, ReactNode } from "react";
+import { GroceryItem, MealLog, PantryCategory, PantryItem, Recipe } from "@/types";
+import { recipes as seedRecipes } from "@/data/recipes";
 import { classifyIngredient } from "@/data/categories";
 import { convertUnits, parseAmount } from "@/data/units";
-import { Recipe } from "@/types";
+import { useSupabaseSync } from "@/hooks/useSupabaseSync";
 
 interface AppContextType {
   pantry: PantryItem[];
@@ -29,6 +29,7 @@ interface AppContextType {
   mealLogs: MealLog[];
   logMeal: (recipeId: string, servings: number) => void;
   removeMealLog: (id: string) => void;
+  isLoading: boolean;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -36,10 +37,28 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [pantry, setPantry] = useState<PantryItem[]>([]);
   const [groceryList, setGroceryList] = useState<GroceryItem[]>([]);
-  const [allRecipes, setAllRecipes] = useState<Recipe[]>(recipes);
+  const [userRecipes, setUserRecipes] = useState<Recipe[]>([]);
   const [mealLogs, setMealLogs] = useState<MealLog[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Seed recipes are always available; user recipes come from Supabase or in-memory
+  const allRecipes = useMemo(() => [...seedRecipes, ...userRecipes], [userRecipes]);
 
   const pantryNames = pantry.map((item) => item.name);
+
+  // Sync hook — loads data on login, auto-saves on changes
+  const syncSetters = useMemo(() => ({
+    setPantry,
+    setGroceryList,
+    setUserRecipes,
+    setMealLogs,
+    setIsLoading,
+  }), []);
+
+  useSupabaseSync(
+    { pantry, groceryList, userRecipes, mealLogs },
+    syncSetters
+  );
 
   function addToPantry(name: string, qty: number = 1, unit: string = "unit", category?: PantryCategory) {
     const normalized = name.toLowerCase().trim();
@@ -99,14 +118,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const neededQty = parsed?.qty ?? 1;
       const neededUnit = parsed?.unit ?? "unit";
 
-      // Check if pantry already has this ingredient
       const pantryItem = pantry.find((p) => p.name === name);
       if (pantryItem) {
-        // Try to convert pantry qty to the recipe's unit
         const converted = convertUnits(pantryItem.qty, pantryItem.unit, neededUnit);
         const pantryQtyInRecipeUnit = converted !== null ? converted : (pantryItem.unit === neededUnit ? pantryItem.qty : 0);
         const deficit = neededQty - pantryQtyInRecipeUnit;
-        if (deficit <= 0) continue; // pantry has enough
+        if (deficit <= 0) continue;
         addToGroceryList(name, Math.round(deficit * 100) / 100, neededUnit);
       } else {
         addToGroceryList(name, neededQty, neededUnit);
@@ -153,7 +170,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   function addRecipe(recipe: Recipe) {
-    setAllRecipes((prev) => [...prev, recipe]);
+    setUserRecipes((prev) => [...prev, recipe]);
   }
 
   function logMeal(recipeId: string, servings: number) {
@@ -199,6 +216,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         mealLogs,
         logMeal,
         removeMealLog,
+        isLoading,
       }}
     >
       {children}
