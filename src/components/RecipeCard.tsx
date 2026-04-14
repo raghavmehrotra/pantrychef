@@ -54,7 +54,9 @@ export default function RecipeCard({ recipe, matchedCount, onSave }: RecipeCardP
             )}
             <div>
               <h3 className="font-serif text-lg font-semibold text-ink">{recipe.name}</h3>
-              <p className="text-sm text-ink-muted mt-1">{recipe.description}</p>
+              {recipe.description && !(recipe.area || recipe.mealCategory) && (
+                <p className="text-sm text-ink-muted mt-1">{recipe.description}</p>
+              )}
               {(recipe.area || recipe.mealCategory) && (
                 <div className="flex gap-1.5 mt-1">
                   {recipe.area && (

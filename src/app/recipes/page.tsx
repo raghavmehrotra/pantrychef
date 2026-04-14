@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import RecipeCard from "@/components/RecipeCard";
 import DiscoverRecipes from "@/components/DiscoverRecipes";
@@ -11,6 +11,19 @@ const EMPTY_INGREDIENT = { name: "", amount: "" };
 export default function RecipesPage() {
   const { pantryNames, allRecipes, addRecipe } = useApp();
   const [showForm, setShowForm] = useState(false);
+  const [filter, setFilter] = useState("");
+  const [newRecipeId, setNewRecipeId] = useState<string | null>(null);
+  const prevCountRef = useRef(allRecipes.length);
+
+  // Detect when a new recipe is added and trigger glow animation
+  useEffect(() => {
+    if (allRecipes.length > prevCountRef.current) {
+      const newest = allRecipes[allRecipes.length - 1];
+      setNewRecipeId(newest.id);
+      setTimeout(() => setNewRecipeId(null), 1000);
+    }
+    prevCountRef.current = allRecipes.length;
+  }, [allRecipes]);
 
   // Form state
   const [name, setName] = useState("");
@@ -27,6 +40,8 @@ export default function RecipesPage() {
   const [fiber, setFiber] = useState(0);
   const [tags, setTags] = useState("");
 
+  const filterLower = filter.toLowerCase().trim();
+
   const recipesWithMatch = allRecipes
     .map((recipe) => {
       const matchedCount = recipe.ingredients.filter((ing) =>
@@ -34,6 +49,9 @@ export default function RecipesPage() {
       ).length;
       return { recipe, matchedCount };
     })
+    .filter(({ recipe }) =>
+      !filterLower || recipe.ingredients.some((ing) => ing.name.includes(filterLower))
+    )
     .sort((a, b) => {
       const aPct = a.matchedCount / a.recipe.ingredients.length;
       const bPct = b.matchedCount / b.recipe.ingredients.length;
@@ -95,19 +113,35 @@ export default function RecipesPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
         {/* Left: My Recipes */}
         <div>
-          <div className="flex items-center justify-between mb-4 h-10">
-            <h2 className="font-serif text-lg font-semibold text-ink">
-              My Recipes {allRecipes.length > 0 && `(${allRecipes.length})`}
-            </h2>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-serif text-lg font-semibold text-ink">
+                My Recipes {allRecipes.length > 0 && `(${allRecipes.length})`}
+              </h2>
+              <p className="text-sm text-ink-muted">Your saved and created recipes</p>
+            </div>
             <button
               onClick={() => setShowForm(!showForm)}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium bg-olive text-cream hover:bg-olive-dark transition-colors"
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-olive text-cream hover:bg-olive-dark transition-colors"
             >
               {showForm ? "Cancel" : "+ New"}
             </button>
+          </div>
+
+          <div className="relative mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted">
+              <path fillRule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clipRule="evenodd" />
+            </svg>
+            <input
+              type="text"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              placeholder="Filter by ingredient..."
+              className="w-full border border-amber-light/40 bg-cream rounded-lg pl-9 pr-3 py-1.5 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-olive"
+            />
           </div>
 
           {showForm && (
@@ -197,11 +231,15 @@ export default function RecipesPage() {
           ) : (
             <div className="space-y-4">
               {recipesWithMatch.map(({ recipe, matchedCount }) => (
-                <RecipeCard
+                <div
                   key={recipe.id}
-                  recipe={recipe}
-                  matchedCount={matchedCount}
-                />
+                  className={newRecipeId === recipe.id ? "animate-glow-in rounded-xl" : ""}
+                >
+                  <RecipeCard
+                    recipe={recipe}
+                    matchedCount={matchedCount}
+                  />
+                </div>
               ))}
             </div>
           )}

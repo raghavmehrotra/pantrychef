@@ -74,7 +74,7 @@ export default function Navbar() {
               <UserButton />
             ) : (
               <SignInButton>
-                <button className="px-3 py-1.5 rounded-md text-sm font-medium text-cream-dark hover:bg-olive-light transition-colors">
+                <button className="px-3 py-1.5 rounded-md text-sm font-medium text-cream-dark hover:bg-olive-light transition-colors cursor-pointer">
                   Sign In
                 </button>
               </SignInButton>

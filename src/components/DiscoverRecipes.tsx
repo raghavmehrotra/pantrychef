@@ -11,6 +11,7 @@ export default function DiscoverRecipes() {
   const [results, setResults] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [savingId, setSavingId] = useState<string | null>(null);
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -48,31 +49,34 @@ export default function DiscoverRecipes() {
     setQuery("");
   }
 
+  function handleSave(recipe: Recipe) {
+    setSavingId(recipe.id);
+    // Wait for the slide-out animation, then add to recipes
+    setTimeout(() => {
+      addRecipe(recipe);
+      setSavingId(null);
+    }, 500);
+  }
+
   function isSaved(recipe: Recipe) {
     return allRecipes.some((r) => r.id === recipe.id);
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between h-10">
-        <h2 className="font-serif text-lg font-semibold text-ink">Discover</h2>
-        <div className="flex gap-2">
-          {results.length > 0 && (
-            <button
-              onClick={handleClear}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg text-red-600 hover:text-red-800 transition-colors"
-            >
-              Clear
-            </button>
-          )}
-          <button
-            onClick={handleRandom}
-            disabled={loading}
-            className="px-3 py-1.5 text-sm font-medium rounded-lg bg-amber/15 text-amber-dark hover:bg-amber/25 transition-colors disabled:opacity-50"
-          >
-            Random Recipe
-          </button>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="font-serif text-lg font-semibold text-ink">Discover</h2>
+          <p className="text-sm text-ink-muted">Explore 500+ recipes from <a href="https://www.themealdb.com" target="_blank" rel="noopener noreferrer" className="text-olive hover:underline">TheMealDB</a></p>
         </div>
+        {results.length > 0 && (
+          <button
+            onClick={handleClear}
+            className="px-3 py-1.5 text-sm font-medium rounded-lg text-red-600 hover:text-red-800 transition-colors"
+          >
+            Clear
+          </button>
+        )}
       </div>
 
       <form onSubmit={handleSearch} className="flex gap-2">
@@ -90,6 +94,14 @@ export default function DiscoverRecipes() {
         >
           {loading ? "Searching..." : "Discover"}
         </button>
+        <button
+          type="button"
+          onClick={handleRandom}
+          disabled={loading}
+          className="px-4 py-2 text-sm font-medium rounded-lg bg-amber/15 text-amber-dark hover:bg-amber/25 transition-colors disabled:opacity-50"
+        >
+          Random
+        </button>
       </form>
 
       {loading && (
@@ -103,11 +115,15 @@ export default function DiscoverRecipes() {
       {!loading && results.length > 0 && (
         <div className="space-y-4">
           {results.map((recipe) => (
-            <RecipeCard
+            <div
               key={recipe.id}
-              recipe={recipe}
-              onSave={!isSaved(recipe) ? () => addRecipe(recipe) : undefined}
-            />
+              className={savingId === recipe.id ? "animate-slide-out-left" : ""}
+            >
+              <RecipeCard
+                recipe={recipe}
+                onSave={!isSaved(recipe) && savingId !== recipe.id ? () => handleSave(recipe) : undefined}
+              />
+            </div>
           ))}
         </div>
       )}
