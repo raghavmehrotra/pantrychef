@@ -42,9 +42,28 @@ export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-start justify-between">
-          <div>
-            <h3 className="font-serif text-lg font-semibold text-ink">{recipe.name}</h3>
-            <p className="text-sm text-ink-muted mt-1">{recipe.description}</p>
+          <div className="flex gap-3">
+            {recipe.image && (
+              <img
+                src={recipe.image}
+                alt={recipe.name}
+                className="w-16 h-16 rounded-lg object-cover shrink-0"
+              />
+            )}
+            <div>
+              <h3 className="font-serif text-lg font-semibold text-ink">{recipe.name}</h3>
+              <p className="text-sm text-ink-muted mt-1">{recipe.description}</p>
+              {(recipe.area || recipe.mealCategory) && (
+                <div className="flex gap-1.5 mt-1">
+                  {recipe.area && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-light/20 text-amber-dark">{recipe.area}</span>
+                  )}
+                  {recipe.mealCategory && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-olive/10 text-olive-dark">{recipe.mealCategory}</span>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
           {matchPercent !== null && (
             <span
@@ -63,7 +82,9 @@ export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
         <div className="flex gap-4 mt-2 text-xs text-ink-muted">
           <span>Prep: {recipe.prepTime}m</span>
           <span>Cook: {recipe.cookTime}m</span>
-          <span>{recipe.nutrition.calories} cal/serving</span>
+          {recipe.nutrition && (
+            <span>{recipe.nutrition.calories} cal/serving</span>
+          )}
         </div>
         <div className="flex items-center justify-between mt-3">
           {matchPercent === 100 ? (
@@ -113,12 +134,14 @@ export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
             </ol>
           </div>
 
-          <div>
-            <h4 className="text-sm font-semibold text-ink-light mb-2">
-              Nutrition (per serving)
-            </h4>
-            <NutritionLabel nutrition={recipe.nutrition} />
-          </div>
+          {recipe.nutrition && (
+            <div>
+              <h4 className="text-sm font-semibold text-ink-light mb-2">
+                Nutrition (per serving)
+              </h4>
+              <NutritionLabel nutrition={recipe.nutrition} />
+            </div>
+          )}
 
           <div className="flex items-center gap-3 pt-2">
             <label className="text-sm text-ink-light">Servings:</label>

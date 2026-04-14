@@ -26,8 +26,8 @@ const cards = [
   },
   {
     href: "/tracker",
-    title: "Manage Macros",
-    description: "Track your daily nutrition and goals",
+    title: "Meal Diary",
+    description: "Log what you ate and when",
     accent: "border-t-ink-light",
     arrow: "text-ink-light",
   },
