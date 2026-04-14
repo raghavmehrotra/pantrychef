@@ -87,19 +87,11 @@ export default function DiscoverRecipes() {
       {!loading && results.length > 0 && (
         <div className="space-y-4">
           {results.map((recipe) => (
-            <div key={recipe.id}>
-              <RecipeCard recipe={recipe} />
-              {!isSaved(recipe) && (
-                <div className="flex justify-end -mt-2 mb-2 pr-4">
-                  <button
-                    onClick={() => addRecipe(recipe)}
-                    className="px-3 py-1 text-xs font-medium rounded-md bg-olive/10 text-olive-dark hover:bg-olive/20 transition-colors"
-                  >
-                    Save to My Recipes
-                  </button>
-                </div>
-              )}
-            </div>
+            <RecipeCard
+              key={recipe.id}
+              recipe={recipe}
+              onSave={!isSaved(recipe) ? () => addRecipe(recipe) : undefined}
+            />
           ))}
         </div>
       )}

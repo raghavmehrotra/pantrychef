@@ -9,14 +9,16 @@ import Link from "next/link";
 interface RecipeCardProps {
   recipe: Recipe;
   matchedCount?: number;
+  onSave?: () => void;
 }
 
-export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
+export default function RecipeCard({ recipe, matchedCount, onSave }: RecipeCardProps) {
   const [expanded, setExpanded] = useState(false);
   const { logMeal, addRecipeToGroceryList } = useApp();
   const [servings, setServings] = useState(1);
   const [logged, setLogged] = useState(false);
   const [carted, setCarted] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const totalIngredients = recipe.ingredients.length;
   const matchPercent = matchedCount !== undefined
@@ -92,17 +94,34 @@ export default function RecipeCard({ recipe, matchedCount }: RecipeCardProps) {
               Ready to cook!
             </span>
           ) : <span />}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              addRecipeToGroceryList(recipe);
-              setCarted(true);
-              setTimeout(() => setCarted(false), 2000);
-            }}
-            className="px-3 py-1 text-xs font-medium rounded-md bg-amber/15 text-amber-dark hover:bg-amber/25 transition-colors"
-          >
-            {carted ? "Added to list!" : "Add ingredients to cart"}
-          </button>
+          <div className="flex items-center gap-2">
+            {onSave && !saved && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSave();
+                  setSaved(true);
+                }}
+                className="px-3 py-1 text-xs font-medium rounded-md bg-olive/10 text-olive-dark hover:bg-olive/20 transition-colors"
+              >
+                Save to My Recipes
+              </button>
+            )}
+            {saved && (
+              <span className="px-3 py-1 text-xs font-medium text-olive">Saved!</span>
+            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                addRecipeToGroceryList(recipe);
+                setCarted(true);
+                setTimeout(() => setCarted(false), 2000);
+              }}
+              className="px-3 py-1 text-xs font-medium rounded-md bg-amber/15 text-amber-dark hover:bg-amber/25 transition-colors"
+            >
+              {carted ? "Added to list!" : "Add ingredients to cart"}
+            </button>
+          </div>
         </div>
       </div>
 

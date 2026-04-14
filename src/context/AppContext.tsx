@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, useMemo, ReactNode } from "react";
 import { GroceryItem, MealLog, PantryCategory, PantryItem, Recipe } from "@/types";
-import { recipes as seedRecipes } from "@/data/recipes";
 import { classifyIngredient } from "@/data/categories";
 import { convertUnits, parseAmount } from "@/data/units";
 import { useSupabaseSync } from "@/hooks/useSupabaseSync";
@@ -41,8 +40,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [mealLogs, setMealLogs] = useState<MealLog[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Seed recipes are always available; user recipes come from Supabase or in-memory
-  const allRecipes = useMemo(() => [...seedRecipes, ...userRecipes], [userRecipes]);
+  // Only user-created and saved recipes (no seed recipes)
+  const allRecipes = useMemo(() => [...userRecipes], [userRecipes]);
 
   const pantryNames = pantry.map((item) => item.name);
 
