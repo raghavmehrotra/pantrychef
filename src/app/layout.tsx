@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -25,18 +26,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${playfair.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-[#FDF8F0] text-[#3E2C1C]">
-        <AppProvider>
-          <Navbar />
-          <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-8">
-            {children}
-          </main>
-        </AppProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html
+        lang="en"
+        className={`${geistSans.variable} ${playfair.variable} h-full antialiased`}
+      >
+        <body className="min-h-full flex flex-col bg-[#FDF8F0] text-[#3E2C1C]">
+          <AppProvider>
+            <Navbar />
+            <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-8">
+              {children}
+            </main>
+          </AppProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

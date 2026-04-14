@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 
 const links = [
   { href: "/", label: "Home" },
@@ -47,7 +48,7 @@ export default function Navbar() {
           </svg>
           PantryChef
         </Link>
-        <div className="flex gap-1">
+        <div className="flex items-center gap-1">
           {links.map((link) => {
             const isActive =
               link.href === "/"
@@ -67,6 +68,18 @@ export default function Navbar() {
               </Link>
             );
           })}
+          <div className="ml-3">
+            <SignedOut>
+              <SignInButton>
+                <button className="px-3 py-1.5 rounded-md text-sm font-medium text-cream-dark hover:bg-olive-light transition-colors">
+                  Sign In
+                </button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
         </div>
       </div>
     </nav>
