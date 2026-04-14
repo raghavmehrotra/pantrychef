@@ -1,9 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!;
+const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ?? "";
 
-export const supabase = createClient(
-  url.startsWith("https://") ? url : `https://${url}`,
-  key
-);
+const url = rawUrl.startsWith("https://") ? rawUrl : `https://${rawUrl}`;
+
+export const supabase = createClient(url, key);
